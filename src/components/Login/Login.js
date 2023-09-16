@@ -15,11 +15,20 @@ const Login = (props) => {
   // The simple rule is to add whatever we use inside the useEffect
   // in this case the enteredEmail, Password and the setFormIsValid function.
   useEffect(() => {
-    setFormIsValid(
-      enteredEmail.includes('@') && enteredPassword.trim().length > 6
-    );
-  }, [enteredEmail, enteredPassword]); // However we don't list setFormIsValid because
-  // because React gurantees that state updating functions never change.
+    // Setting a timer for every keystroke with a delay of 500ms
+    const timeOutIdentifier = setTimeout((() => {
+      console.log('Checking form validity...');
+      setFormIsValid(
+        enteredEmail.includes('@') && enteredPassword.trim().length > 6
+      );
+    }), 500);
+
+    // We need to clear the timers every time the user hits a key, so that we have only one timer running
+    return () => {
+      console.log('Cleanup');
+      clearTimeout(timeOutIdentifier);
+    }; // Cleanup function, runs before every new side effect and before the component is removed from the dom. It does not run before the first side effect execution.
+  }, [enteredEmail, enteredPassword]); // However we don't list setFormIsValid because React gurantees that state updating functions never change.
 
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
