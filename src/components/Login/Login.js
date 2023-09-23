@@ -44,39 +44,40 @@ const Login = (props) => {
     isValid: null
   });
 
-/*   // Using dependencies
-  // The simple rule is to add whatever we use inside the useEffect
-  // in this case the enteredEmail, Password and the setFormIsValid function.
+  // Destructuring so we can use the validity instead of the whole object.
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = emailState;
+
   useEffect(() => {
     // Setting a timer for every keystroke with a delay of 500ms
     const timeOutIdentifier = setTimeout((() => {
       console.log('Checking form validity...');
-      setFormIsValid(
-        emailState.isValid && enteredPassword.trim().length > 6
+      setFormIsValid (
+        emailIsValid && passwordIsValid
       );
     }), 500);
 
-    // We need to clear the timers every time the user hits a key, so that we have only one timer running
+    // cleanup function
     return () => {
       console.log('Cleanup');
-      clearTimeout(timeOutIdentifier);
-    }; // Cleanup function, runs before every new side effect and before the component is removed from the dom. It does not run before the first side effect execution.
-  }, [emailState.isValid, enteredPassword]); // However we don't list setFormIsValid because React gurantees that state updating functions never change. */
+      clearTimeout(timeOutIdentifier); 
+    };
+  }, [emailIsValid, passwordIsValid]); // This way we can optimize the useEffect and not run it everytime
 
   const emailChangeHandler = (event) => {
     dispatchEmail({type: 'USER_INPUT', value: event.target.value}); // We set the action to be an object.
 
-    setFormIsValid(
-      event.target.value.includes('@') && passwordState.isValid
-    );
+    //setFormIsValid(
+    //   event.target.value.includes('@') && passwordState.isValid
+    // );
   };
 
   const passwordChangeHandler = (event) => {
     dispatchPassword({type: 'USER_INPUT', value: event.target.value});
 
-    setFormIsValid(
-      emailState.isValid && event.target.value.trim() > 6
-    );
+    //setFormIsValid(
+    //  emailState.isValid && event.target.value.trim() > 6
+    //);
   };
 
   const validateEmailHandler = () => {
